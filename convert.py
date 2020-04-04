@@ -1,5 +1,4 @@
 import sys
-from random import randint
 from math import pow
 
 ICAO_SIZE = 6           # size of an icao address
@@ -230,22 +229,6 @@ if __name__ == "__main__":
 
     if val in ['H', '-H', 'HELP', '-HELP', '--HELP']:
         print_help()
-
-    # test
-    if val == 'TEST':
-        ok = True
-        for i in range(10000000):
-            icao0 = create_icao('a', randint(0, 9*bucket1_size))
-            nnumber = icao_to_n(icao0)
-            icao1 = n_to_icao(nnumber)
-            ok = ok and icao0 == icao1
-            if not ok:
-                break
-        if ok:
-            print('All tests passed successfully')
-        else:
-            print('Failed!')
-        sys.exit()
     
     if val[0] == 'N': # N-Number
         res = n_to_icao(val)
