@@ -2,7 +2,7 @@
 
 Script converting ICAO addresses to N-Numbers (Tail Numbers) and reciprocally. Only works for United States aircraft registrations.
 
-## Running the script
+## Using the converter
 
 ### Requirements
 
@@ -11,24 +11,38 @@ Script converting ICAO addresses to N-Numbers (Tail Numbers) and reciprocally. O
 
 ### Install
 
-Simply clone the repo, and start converting.
+Using `pip install`
+```bash
+pip install icao_nnumber_converter_us
+```
+
+Usage of the `n_to_icao` and `icao_to_n` functions. Note that both functions return `None` on invalid input.
+
+```python
+python3
+>>> from icao_nnumber_converter_us import n_to_icao, icao_to_n
+>>> n_to_icao("N12345")
+'a061d9'
+>>> icao_to_n("abcdef")
+'N86QU'
+```
+
+Or simply clone the repo, and start converting.
 
 ```bash
 git clone https://github.com/guillaumemichel/icao-nnumber_converter.git
 cd icao-nnumber_converter
 ```
 
-### Usage
-
 Convert N-Number to ICAO address
 ```bash
-> python convert.py N12345
+> python3 convert.py N12345
 a061d9
 ```
 
 Convert ICAO address to N-Number
 ```bash
-> python convert.py abcdef
+> python3 convert.py abcdef
 N86QU
 ```
 
