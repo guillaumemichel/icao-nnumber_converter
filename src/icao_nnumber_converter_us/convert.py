@@ -1,5 +1,4 @@
 import sys
-from math import pow
 
 ICAO_SIZE = 6           # size of an icao address
 NNUMBER_MAX_SIZE = 6    # max size of a N-Number
@@ -9,7 +8,7 @@ digitset = "0123456789"
 hexset = "0123456789ABCDEF"
 allchars = charset+digitset
 
-suffix_size = 1 + len(charset) + int(pow(len(charset),2))   # 601
+suffix_size = 1 + len(charset) * (1 + len(charset))         # 601
 bucket4_size = 1 + len(charset) + len(digitset)             # 35
 bucket3_size = len(digitset)*bucket4_size + suffix_size     # 951
 bucket2_size = len(digitset)*(bucket3_size) + suffix_size   # 10111
@@ -22,7 +21,6 @@ def get_suffix(offset):
     An offset of 0 returns in a valid emtpy suffix
     A non-zero offset return a string containing one or two character from 'charset'
     Reverse function of suffix_shift()
-
     0 -> ''
     1 -> 'A'
     2 -> 'AA'
@@ -88,7 +86,6 @@ def create_icao(prefix, i):
     Creates an american icao number composed from the prefix ('a' for USA)
     and from the given number i
     The output is an hexadecimal of length 6 starting with the suffix
-
     Example: create_icao('a', 11) -> "a0000b"
     """
     suffix = hex(i)[2:]
@@ -107,13 +104,22 @@ def n_to_icao(nnumber):
 
     # check parameter validity
     valid = True
+    # verify that tail number has length <=6 and starts with 'N'
     if (not 0<len(nnumber)<=NNUMBER_MAX_SIZE) or nnumber[0] != 'N':
         valid = False
     else:
+        # verify the alphabet of the tail number
         for c in nnumber:
             if c not in allchars:
                 valid = False
                 break
+        # verify that the tail number has a correct format (single suffix at the end of string)
+        if valid and len(nnumber) > 3:
+            for i in range (1, len(nnumber)-2):
+                if nnumber[i] in charset:
+                    valid = False
+                    break
+
     if not valid:
         return None
     
@@ -125,7 +131,7 @@ def n_to_icao(nnumber):
         count += 1
         for i in range(len(nnumber)):
             if i == NNUMBER_MAX_SIZE-2: # NNUMBER_MAX_SIZE-2 = 4
-                # last possible char (in allchars)
+                # last possible char (in allchars)
                 count += allchars.index(nnumber[i])+1
             elif nnumber[i] in charset:
                 # first alphabetical char
@@ -179,7 +185,7 @@ def icao_to_n(icao):
     if rem1 < suffix_size:
         return output + get_suffix(rem1)
 
-    rem1 -= suffix_size # shift for digit 2
+    rem1 -= suffix_size # shift for digit 2
     dig2 = int(rem1/bucket2_size)
     rem2 = rem1%bucket2_size
     output += str(dig2)
